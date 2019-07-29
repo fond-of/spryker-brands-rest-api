@@ -7,8 +7,6 @@ use FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandsMapper;
 use FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandsMapperInterface;
 use FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandsReader;
 use FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandsReaderInterface;
-use FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandsResourceRelationshipExpander;
-use FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandsResourceRelationshipExpanderInterface;
 use Spryker\Glue\Kernel\AbstractFactory;
 
 class BrandsRestApiFactory extends AbstractFactory
@@ -41,16 +39,5 @@ class BrandsRestApiFactory extends AbstractFactory
     protected function getBrandClient(): BrandsRestApiToBrandClientInterface
     {
         return $this->getProvidedDependency(BrandsRestApiDependencyProvider::CLIENT_BRAND);
-    }
-
-    /**
-     * @return \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandsResourceRelationshipExpanderInterface
-     */
-    public function createBrandsResourceRelationshipExpander(): BrandsResourceRelationshipExpanderInterface
-    {
-        return new BrandsResourceRelationshipExpander(
-            $this->getResourceBuilder(),
-            $this->createBrandsMapper()
-        );
     }
 }
