@@ -31,7 +31,7 @@ class BrandsRestApiDependencyProvider extends AbstractBundleDependencyProvider
      */
     protected function addBrandClient(Container $container): Container
     {
-        $container[static::CLIENT_BRAND] = function (Container $container) {
+        $container[static::CLIENT_BRAND] = static function (Container $container) {
             return new BrandsRestApiToBrandClientBridge($container->getLocator()->brand()->client());
         };
 

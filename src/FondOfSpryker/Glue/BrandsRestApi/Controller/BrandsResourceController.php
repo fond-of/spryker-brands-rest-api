@@ -18,7 +18,14 @@ class BrandsResourceController extends AbstractController
      */
     public function getAction(RestRequestInterface $restRequest): RestResponseInterface
     {
-        return $this->getFactory()->createBrandsReader()
+        if ($restRequest->getResource()->getId()) {
+            return $this->getFactory()
+                ->createBrandsReader()
+                ->findBrandByUuid($restRequest);
+        }
+
+        return $this->getFactory()
+            ->createBrandsReader()
             ->getActiveBrands($restRequest);
     }
 }
