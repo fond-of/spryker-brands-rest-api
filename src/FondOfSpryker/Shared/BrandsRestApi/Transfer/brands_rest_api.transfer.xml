@@ -20,5 +20,26 @@
 
     <transfer name="Brand">
         <property name="uuid" type="string" />
+        <property name="brandCompanyRelation" type="BrandCompanyRelation"/>
+        <property name="brandCustomerRelation" type="BrandCustomerRelation"/>
+    </transfer>
+
+    <transfer name="BrandCustomerRelation">
+        <property name="idBrand" type="int"/>
+        <property name="customerIds" type="int[]"/>
+    </transfer>
+
+    <transfer name="BrandCompanyRelation">
+        <property name="idBrand" type="int"/>
+        <property name="companyIds" type="int[]"/>
+    </transfer>
+
+    <transfer name="RestUser">
+        <property name="idCompany" type="int"/>
+    </transfer>
+
+    <transfer name="BrandResponse">
+        <property name="isSuccessful" type="bool" />
+        <property name="brand" type="Brand" />
     </transfer>
 </transfers>
