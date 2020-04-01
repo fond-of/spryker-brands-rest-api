@@ -6,12 +6,12 @@ use Codeception\Test\Unit;
 use Generated\Shared\Transfer\BrandTransfer;
 use Generated\Shared\Transfer\RestBrandsResponseAttributesTransfer;
 
-class BrandsMapperTest extends Unit
+class BrandMapperTest extends Unit
 {
     /**
-     * @var \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandsMapper
+     * @var \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandMapper
      */
-    protected $brandsMapper;
+    protected $brandMapper;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\BrandTransfer
@@ -29,7 +29,7 @@ class BrandsMapperTest extends Unit
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->brandsMapper = new BrandsMapper();
+        $this->brandMapper = new BrandMapper();
     }
 
     /**
@@ -43,7 +43,7 @@ class BrandsMapperTest extends Unit
 
         $this->assertInstanceOf(
             RestBrandsResponseAttributesTransfer::class,
-            $this->brandsMapper->mapRestBrandsResponseAttributesTransfer($this->brandTransferMock)
+            $this->brandMapper->mapRestBrandsResponseAttributesTransfer($this->brandTransferMock)
         );
     }
 }
