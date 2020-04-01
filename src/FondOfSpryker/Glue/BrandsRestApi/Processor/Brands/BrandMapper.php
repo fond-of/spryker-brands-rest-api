@@ -5,16 +5,16 @@ namespace FondOfSpryker\Glue\BrandsRestApi\Processor\Brands;
 use Generated\Shared\Transfer\BrandTransfer;
 use Generated\Shared\Transfer\RestBrandsResponseAttributesTransfer;
 
-class BrandsMapper implements BrandsMapperInterface
+class BrandMapper implements BrandMapperInterface
 {
     /**
      * @param \Generated\Shared\Transfer\BrandTransfer $brandTransfer
      *
      * @return \Generated\Shared\Transfer\RestBrandsResponseAttributesTransfer
      */
-    public function mapRestBrandsResponseAttributesTransfer(BrandTransfer $brandTransfer
-    ): RestBrandsResponseAttributesTransfer
-    {
+    public function mapRestBrandsResponseAttributesTransfer(
+        BrandTransfer $brandTransfer
+    ): RestBrandsResponseAttributesTransfer {
         $restBrandsResponseAttributesTransfer = new RestBrandsResponseAttributesTransfer();
 
         $restBrandsResponseAttributesTransfer->fromArray(

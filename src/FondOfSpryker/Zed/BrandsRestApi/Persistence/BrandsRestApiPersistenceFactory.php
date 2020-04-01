@@ -2,8 +2,8 @@
 
 namespace FondOfSpryker\Zed\BrandsRestApi\Persistence;
 
-use FondOfSpryker\Zed\BrandsRestApi\Persistence\Mapper\BrandsMapper;
-use FondOfSpryker\Zed\BrandsRestApi\Persistence\Mapper\BrandsMapperInterface;
+use FondOfSpryker\Zed\BrandsRestApi\Persistence\Mapper\BrandMapper;
+use FondOfSpryker\Zed\BrandsRestApi\Persistence\Mapper\BrandMapperInterface;
 use Orm\Zed\Brand\Persistence\FosBrandQuery;
 use Spryker\Zed\Kernel\Persistence\AbstractPersistenceFactory;
 
@@ -21,10 +21,10 @@ class BrandsRestApiPersistenceFactory extends AbstractPersistenceFactory
     }
 
     /**
-     * @return \FondOfSpryker\Zed\BrandsRestApi\Persistence\Mapper\BrandsMapperInterface
+     * @return \FondOfSpryker\Zed\BrandsRestApi\Persistence\Mapper\BrandMapperInterface
      */
-    public function createBrandsMapper(): BrandsMapperInterface
+    public function createBrandMapper(): BrandMapperInterface
     {
-        return new BrandsMapper();
+        return new BrandMapper();
     }
 }

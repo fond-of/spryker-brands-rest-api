@@ -3,10 +3,10 @@
 namespace FondOfSpryker\Glue\BrandsRestApi;
 
 use FondOfSpryker\Glue\BrandsRestApi\Dependency\Client\BrandsRestApiToBrandClientInterface;
-use FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandsMapper;
-use FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandsMapperInterface;
-use FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandsReader;
-use FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandsReaderInterface;
+use FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandMapper;
+use FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandMapperInterface;
+use FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandReader;
+use FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandReaderInterface;
 use FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiError;
 use FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiErrorInterface;
 use FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiValidator;
@@ -19,14 +19,14 @@ use Spryker\Glue\Kernel\AbstractFactory;
 class BrandsRestApiFactory extends AbstractFactory
 {
     /**
-     * @return \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandsReaderInterface
+     * @return \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandReaderInterface
      */
-    public function createBrandsReader(): BrandsReaderInterface
+    public function createBrandReader(): BrandReaderInterface
     {
-        return new BrandsReader(
+        return new BrandReader(
             $this->getResourceBuilder(),
             $this->getBrandClient(),
-            $this->createBrandsMapper(),
+            $this->createBrandMapper(),
             $this->getClient(),
             $this->createRestApiError(),
             $this->createRestApiValidator()
@@ -34,11 +34,11 @@ class BrandsRestApiFactory extends AbstractFactory
     }
 
     /**
-     * @return \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandsMapperInterface
+     * @return \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandMapperInterface
      */
-    public function createBrandsMapper(): BrandsMapperInterface
+    public function createBrandMapper(): BrandMapperInterface
     {
-        return new BrandsMapper();
+        return new BrandMapper();
     }
 
     /**

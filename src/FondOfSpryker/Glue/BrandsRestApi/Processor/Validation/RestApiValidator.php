@@ -13,12 +13,12 @@ class RestApiValidator implements RestApiValidatorInterface
      *
      * @return bool
      */
-    public function isBrandFromRestUser(
+    public function isBrandAssignedToRestUser(
         BrandTransfer $brandTransfer,
         RestUserTransfer $restUserTransfer
     ): bool {
-        return $this->isBrandFromRestUserCustomer($brandTransfer, $restUserTransfer) ||
-            $this->isBrandFromRestUserCompany($brandTransfer, $restUserTransfer);
+        return $this->isBrandAssignedToCustomer($brandTransfer, $restUserTransfer) ||
+            $this->isBrandAssignedToCompany($brandTransfer, $restUserTransfer);
     }
 
     /**
@@ -27,7 +27,7 @@ class RestApiValidator implements RestApiValidatorInterface
      *
      * @return bool
      */
-    protected function isBrandFromRestUserCustomer(
+    protected function isBrandAssignedToCustomer(
         BrandTransfer $brandTransfer,
         RestUserTransfer $restUserTransfer
     ): bool {
@@ -46,7 +46,7 @@ class RestApiValidator implements RestApiValidatorInterface
      *
      * @return bool
      */
-    protected function isBrandFromRestUserCompany(
+    protected function isBrandAssignedToCompany(
         BrandTransfer $brandTransfer,
         RestUserTransfer $restUserTransfer
     ): bool {

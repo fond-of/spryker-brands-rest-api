@@ -27,7 +27,7 @@ class BrandsRestApiRepository extends AbstractRepository implements BrandsRestAp
         }
 
         return $this->getFactory()
-            ->createBrandsMapper()
-            ->mapEntityToBrandTransfer($brandEntity, new BrandTransfer());
+            ->createBrandMapper()
+            ->mapEntityToTransfer($brandEntity, new BrandTransfer());
     }
 }

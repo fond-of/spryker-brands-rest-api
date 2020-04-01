@@ -12,7 +12,7 @@ use Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceBuilderInterface;
 use Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface;
 use Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface;
 
-class BrandsReader implements BrandsReaderInterface
+class BrandReader implements BrandReaderInterface
 {
     /**
      * @var \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceBuilderInterface
@@ -25,7 +25,7 @@ class BrandsReader implements BrandsReaderInterface
     protected $brandClient;
 
     /**
-     * @var \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandsMapperInterface
+     * @var \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandMapperInterface
      */
     protected $brandsMapper;
 
@@ -47,7 +47,7 @@ class BrandsReader implements BrandsReaderInterface
     /**
      * @param \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceBuilderInterface $restResourceBuilder
      * @param \FondOfSpryker\Glue\BrandsRestApi\Dependency\Client\BrandsRestApiToBrandClientInterface $brandClient
-     * @param \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandsMapperInterface $brandsMapper
+     * @param \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandMapperInterface $brandsMapper
      * @param \FondOfSpryker\Client\BrandsRestApi\BrandsRestApiClientInterface $brandsRestApiClient
      * @param \FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiErrorInterface $restApiError
      * @param \FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiValidatorInterface $restApiValidator
@@ -55,7 +55,7 @@ class BrandsReader implements BrandsReaderInterface
     public function __construct(
         RestResourceBuilderInterface $restResourceBuilder,
         BrandsRestApiToBrandClientInterface $brandClient,
-        BrandsMapperInterface $brandsMapper,
+        BrandMapperInterface $brandsMapper,
         BrandsRestApiClientInterface $brandsRestApiClient,
         RestApiErrorInterface $restApiError,
         RestApiValidatorInterface $restApiValidator
@@ -91,7 +91,7 @@ class BrandsReader implements BrandsReaderInterface
             return $this->restApiError->addBrandNotFoundError($restResponse);
         }
 
-        if (!$this->restApiValidator->isBrandFromRestUser($brandResponseTransfer->getBrand(), $restRequest->getRestUser())) {
+        if (!$this->restApiValidator->isBrandAssignedToRestUser($brandResponseTransfer->getBrand(), $restRequest->getRestUser())) {
             return $this->restApiError->addBrandNoPermissionError($restResponse);
         }
 
@@ -121,7 +121,7 @@ class BrandsReader implements BrandsReaderInterface
         $brandCollectionTransfer = $this->brandClient->getActiveBrands();
 
         foreach ($brandCollectionTransfer->getBrands() as $brandTransfer) {
-            if (!$this->restApiValidator->isBrandFromRestUser($brandTransfer, $restRequest->getRestUser())) {
+            if (!$this->restApiValidator->isBrandAssignedToRestUser($brandTransfer, $restRequest->getRestUser())) {
                 continue;
             }
 

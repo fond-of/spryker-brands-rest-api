@@ -20,12 +20,12 @@ class BrandsResourceController extends AbstractController
     {
         if ($restRequest->getResource()->getId()) {
             return $this->getFactory()
-                ->createBrandsReader()
+                ->createBrandReader()
                 ->findBrandByUuid($restRequest);
         }
 
         return $this->getFactory()
-            ->createBrandsReader()
+            ->createBrandReader()
             ->getActiveBrands($restRequest);
     }
 }

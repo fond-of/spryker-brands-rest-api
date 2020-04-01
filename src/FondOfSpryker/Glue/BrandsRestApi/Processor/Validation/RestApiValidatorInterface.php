@@ -13,7 +13,7 @@ interface RestApiValidatorInterface
      *
      * @return bool
      */
-    public function isBrandFromRestUser(
+    public function isBrandAssignedToRestUser(
         BrandTransfer $brandTransfer,
         RestUserTransfer $restUserTransfer
     ): bool;

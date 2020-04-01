@@ -18,10 +18,10 @@ use Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceInterface;
 use Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface;
 use Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface;
 
-class BrandsReaderTest extends Unit
+class BrandReaderTest extends Unit
 {
     /**
-     * @var \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandsReader
+     * @var \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandReader
      */
     protected $brandsReader;
 
@@ -36,7 +36,7 @@ class BrandsReaderTest extends Unit
     protected $brandsRestApiToBrandClientInterfaceMock;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandsMapperInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|\FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandMapperInterface
      */
     protected $brandsMapperInterfaceMock;
 
@@ -125,7 +125,7 @@ class BrandsReaderTest extends Unit
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->brandsMapperInterfaceMock = $this->getMockBuilder(BrandsMapperInterface::class)
+        $this->brandsMapperInterfaceMock = $this->getMockBuilder(BrandMapperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -181,7 +181,7 @@ class BrandsReaderTest extends Unit
 
         $this->id = 'id';
 
-        $this->brandsReader = new BrandsReader(
+        $this->brandsReader = new BrandReader(
             $this->restResourceBuilderInterfaceMock,
             $this->brandsRestApiToBrandClientInterfaceMock,
             $this->brandsMapperInterfaceMock,
@@ -213,7 +213,7 @@ class BrandsReaderTest extends Unit
             ->willReturn($this->restUserTransferMock);
 
         $this->restApiValidatorInterfaceMock->expects($this->atLeastOnce())
-            ->method('isBrandFromRestUser')
+            ->method('isBrandAssignedToRestUser')
             ->with($this->brandTransferMock, $this->restUserTransferMock)
             ->willReturn(true);
 
@@ -262,7 +262,7 @@ class BrandsReaderTest extends Unit
             ->willReturn($this->restUserTransferMock);
 
         $this->restApiValidatorInterfaceMock->expects($this->atLeastOnce())
-            ->method('isBrandFromRestUser')
+            ->method('isBrandAssignedToRestUser')
             ->with($this->brandTransferMock, $this->restUserTransferMock)
             ->willReturn(false);
 
@@ -306,7 +306,7 @@ class BrandsReaderTest extends Unit
             ->willReturn($this->restUserTransferMock);
 
         $this->restApiValidatorInterfaceMock->expects($this->atLeastOnce())
-            ->method('isBrandFromRestUser')
+            ->method('isBrandAssignedToRestUser')
             ->with($this->brandTransferMock, $this->restUserTransferMock)
             ->willReturn(true);
 
@@ -442,7 +442,7 @@ class BrandsReaderTest extends Unit
             ->willReturn($this->restUserTransferMock);
 
         $this->restApiValidatorInterfaceMock->expects($this->atLeastOnce())
-            ->method('isBrandFromRestUser')
+            ->method('isBrandAssignedToRestUser')
             ->with($this->brandTransferMock, $this->restUserTransferMock)
             ->willReturn(false);
 

@@ -3,7 +3,7 @@
 namespace FondOfSpryker\Glue\BrandsRestApi;
 
 use Codeception\Test\Unit;
-use FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandsMapper;
+use FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandMapper;
 
 class BrandsRestApiFactoryTest extends Unit
 {
@@ -26,8 +26,8 @@ class BrandsRestApiFactoryTest extends Unit
     public function testCreateBrandsMapper(): void
     {
         $this->assertInstanceOf(
-            BrandsMapper::class,
-            $this->brandsRestApiFactory->createBrandsMapper()
+            BrandMapper::class,
+            $this->brandsRestApiFactory->createBrandMapper()
         );
     }
 }

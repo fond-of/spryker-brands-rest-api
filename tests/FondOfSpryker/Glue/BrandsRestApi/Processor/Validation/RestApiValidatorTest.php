@@ -90,7 +90,7 @@ class RestApiValidatorTest extends Unit
     /**
      * @return void
      */
-    public function testIsBrandFromRestUser(): void
+    public function testIsBrandAssignedToRestUser(): void
     {
         $this->brandTransferMock->expects($this->atLeastOnce())
             ->method('getBrandCustomerRelation')
@@ -117,7 +117,7 @@ class RestApiValidatorTest extends Unit
             ->willReturn($this->companyId);
 
         $this->assertTrue(
-            $this->restApiValidator->isBrandFromRestUser(
+            $this->restApiValidator->isBrandAssignedToRestUser(
                 $this->brandTransferMock,
                 $this->restUserTransferMock
             )
@@ -127,7 +127,7 @@ class RestApiValidatorTest extends Unit
     /**
      * @return void
      */
-    public function testIsBrandFromRestUserBrandRelationsNull(): void
+    public function testIsBrandAssignedToRestUserBrandRelationsNull(): void
     {
         $this->brandTransferMock->expects($this->atLeastOnce())
             ->method('getBrandCustomerRelation')
@@ -138,7 +138,7 @@ class RestApiValidatorTest extends Unit
             ->willReturn(null);
 
         $this->assertFalse(
-            $this->restApiValidator->isBrandFromRestUser(
+            $this->restApiValidator->isBrandAssignedToRestUser(
                 $this->brandTransferMock,
                 $this->restUserTransferMock
             )
