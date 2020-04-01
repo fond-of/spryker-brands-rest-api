@@ -23,7 +23,7 @@ class BrandsRestApiFactoryTest extends Unit
     /**
      * @return void
      */
-    public function testCreateBrandsMapper(): void
+    public function testCreateBrandMapper(): void
     {
         $this->assertInstanceOf(
             BrandMapper::class,

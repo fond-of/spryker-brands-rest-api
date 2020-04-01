@@ -11,7 +11,7 @@ class BrandMapperTest extends Unit
     /**
      * @var \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandMapper
      */
-    protected $brandsMapper;
+    protected $brandMapper;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\BrandTransfer
@@ -29,7 +29,7 @@ class BrandMapperTest extends Unit
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->brandsMapper = new BrandMapper();
+        $this->brandMapper = new BrandMapper();
     }
 
     /**
@@ -43,7 +43,7 @@ class BrandMapperTest extends Unit
 
         $this->assertInstanceOf(
             RestBrandsResponseAttributesTransfer::class,
-            $this->brandsMapper->mapRestBrandsResponseAttributesTransfer($this->brandTransferMock)
+            $this->brandMapper->mapRestBrandsResponseAttributesTransfer($this->brandTransferMock)
         );
     }
 }

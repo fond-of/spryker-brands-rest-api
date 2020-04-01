@@ -3,7 +3,7 @@
 namespace FondOfSpryker\Zed\BrandsRestApi\Business;
 
 use Codeception\Test\Unit;
-use FondOfSpryker\Zed\BrandsRestApi\Business\Reader\BrandsReaderInterface;
+use FondOfSpryker\Zed\BrandsRestApi\Business\Reader\BrandReaderInterface;
 use Generated\Shared\Transfer\BrandResponseTransfer;
 use Generated\Shared\Transfer\BrandTransfer;
 
@@ -25,9 +25,9 @@ class BrandsRestApiFacadeTest extends Unit
     protected $brandsRestApiBusinessFactoryMock;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\FondOfSpryker\Zed\BrandsRestApi\Business\Reader\BrandsReaderInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|\FondOfSpryker\Zed\BrandsRestApi\Business\Reader\BrandReaderInterface
      */
-    protected $brandsReaderInterfaceMock;
+    protected $brandReaderInterfaceMock;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\BrandResponseTransfer
@@ -47,7 +47,7 @@ class BrandsRestApiFacadeTest extends Unit
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->brandsReaderInterfaceMock = $this->getMockBuilder(BrandsReaderInterface::class)
+        $this->brandReaderInterfaceMock = $this->getMockBuilder(BrandReaderInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -65,10 +65,10 @@ class BrandsRestApiFacadeTest extends Unit
     public function testFindBrandByUuid(): void
     {
         $this->brandsRestApiBusinessFactoryMock->expects($this->atLeastOnce())
-            ->method('createBrandsReader')
-            ->willReturn($this->brandsReaderInterfaceMock);
+            ->method('createBrandReader')
+            ->willReturn($this->brandReaderInterfaceMock);
 
-        $this->brandsReaderInterfaceMock->expects($this->atLeastOnce())
+        $this->brandReaderInterfaceMock->expects($this->atLeastOnce())
             ->method('findBrandByUuid')
             ->willReturn($this->brandResponseTransferMock);
 

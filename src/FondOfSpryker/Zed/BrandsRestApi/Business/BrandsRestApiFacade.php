@@ -19,6 +19,6 @@ class BrandsRestApiFacade extends AbstractFacade implements BrandsRestApiFacadeI
      */
     public function findBrandByUuid(BrandTransfer $brandTransfer): BrandResponseTransfer
     {
-        return $this->getFactory()->createBrandsReader()->findBrandByUuid($brandTransfer);
+        return $this->getFactory()->createBrandReader()->findBrandByUuid($brandTransfer);
     }
 }

@@ -8,12 +8,12 @@ use FondOfSpryker\Zed\BrandsRestApi\Persistence\BrandsRestApiRepositoryInterface
 use Generated\Shared\Transfer\BrandResponseTransfer;
 use Generated\Shared\Transfer\BrandTransfer;
 
-class BrandsReaderTest extends Unit
+class BrandReaderTest extends Unit
 {
     /**
-     * @var \FondOfSpryker\Zed\BrandsRestApi\Business\Reader\BrandsReader
+     * @var \FondOfSpryker\Zed\BrandsRestApi\Business\Reader\BrandReader
      */
-    protected $brandsReader;
+    protected $brandReader;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\FondOfSpryker\Zed\BrandsRestApi\Persistence\BrandsRestApiRepositoryInterface
@@ -54,7 +54,7 @@ class BrandsReaderTest extends Unit
 
         $this->uuid = 'uuid';
 
-        $this->brandsReader = new BrandsReader(
+        $this->brandReader = new BrandReader(
             $this->brandsRestApiRepositoryInterfaceMock,
             $this->brandFacadeInterfaceMock
         );
@@ -85,7 +85,7 @@ class BrandsReaderTest extends Unit
 
         $this->assertInstanceOf(
             BrandResponseTransfer::class,
-            $this->brandsReader->findBrandByUuid(
+            $this->brandReader->findBrandByUuid(
                 $this->brandTransferMock
             )
         );
@@ -116,7 +116,7 @@ class BrandsReaderTest extends Unit
 
         $this->assertInstanceOf(
             BrandResponseTransfer::class,
-            $this->brandsReader->findBrandByUuid(
+            $this->brandReader->findBrandByUuid(
                 $this->brandTransferMock
             )
         );

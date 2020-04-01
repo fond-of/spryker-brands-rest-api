@@ -4,8 +4,8 @@ namespace FondOfSpryker\Zed\BrandsRestApi\Business;
 
 use FondOfSpryker\Zed\Brand\Business\BrandFacadeInterface;
 use FondOfSpryker\Zed\BrandsRestApi\BrandsRestApiDependencyProvider;
-use FondOfSpryker\Zed\BrandsRestApi\Business\Reader\BrandsReader;
-use FondOfSpryker\Zed\BrandsRestApi\Business\Reader\BrandsReaderInterface;
+use FondOfSpryker\Zed\BrandsRestApi\Business\Reader\BrandReader;
+use FondOfSpryker\Zed\BrandsRestApi\Business\Reader\BrandReaderInterface;
 use Spryker\Zed\Kernel\Business\AbstractBusinessFactory;
 
 /**
@@ -14,11 +14,11 @@ use Spryker\Zed\Kernel\Business\AbstractBusinessFactory;
 class BrandsRestApiBusinessFactory extends AbstractBusinessFactory
 {
     /**
-     * @return \FondOfSpryker\Zed\BrandsRestApi\Business\Reader\BrandsReaderInterface
+     * @return \FondOfSpryker\Zed\BrandsRestApi\Business\Reader\BrandReaderInterface
      */
-    public function createBrandsReader(): BrandsReaderInterface
+    public function createBrandReader(): BrandReaderInterface
     {
-        return new BrandsReader(
+        return new BrandReader(
             $this->getRepository(),
             $this->getBrandFacade()
         );

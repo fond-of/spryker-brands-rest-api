@@ -7,7 +7,7 @@ use FondOfSpryker\Zed\BrandsRestApi\Persistence\BrandsRestApiRepositoryInterface
 use Generated\Shared\Transfer\BrandResponseTransfer;
 use Generated\Shared\Transfer\BrandTransfer;
 
-interface BrandsReaderInterface
+interface BrandReaderInterface
 {
     /**
      * @param \FondOfSpryker\Zed\BrandsRestApi\Persistence\BrandsRestApiRepositoryInterface $brandsRestApiRepository

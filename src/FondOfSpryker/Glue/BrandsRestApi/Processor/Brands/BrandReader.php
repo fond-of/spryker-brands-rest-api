@@ -27,7 +27,7 @@ class BrandReader implements BrandReaderInterface
     /**
      * @var \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandMapperInterface
      */
-    protected $brandsMapper;
+    protected $brandMapper;
 
     /**
      * @var \FondOfSpryker\Client\BrandsRestApi\BrandsRestApiClientInterface
@@ -47,7 +47,7 @@ class BrandReader implements BrandReaderInterface
     /**
      * @param \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceBuilderInterface $restResourceBuilder
      * @param \FondOfSpryker\Glue\BrandsRestApi\Dependency\Client\BrandsRestApiToBrandClientInterface $brandClient
-     * @param \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandMapperInterface $brandsMapper
+     * @param \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandMapperInterface $brandMapper
      * @param \FondOfSpryker\Client\BrandsRestApi\BrandsRestApiClientInterface $brandsRestApiClient
      * @param \FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiErrorInterface $restApiError
      * @param \FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiValidatorInterface $restApiValidator
@@ -55,14 +55,14 @@ class BrandReader implements BrandReaderInterface
     public function __construct(
         RestResourceBuilderInterface $restResourceBuilder,
         BrandsRestApiToBrandClientInterface $brandClient,
-        BrandMapperInterface $brandsMapper,
+        BrandMapperInterface $brandMapper,
         BrandsRestApiClientInterface $brandsRestApiClient,
         RestApiErrorInterface $restApiError,
         RestApiValidatorInterface $restApiValidator
     ) {
         $this->restResourceBuilder = $restResourceBuilder;
         $this->brandClient = $brandClient;
-        $this->brandsMapper = $brandsMapper;
+        $this->brandMapper = $brandMapper;
         $this->brandsRestApiClient = $brandsRestApiClient;
         $this->restApiError = $restApiError;
         $this->restApiValidator = $restApiValidator;
@@ -95,7 +95,7 @@ class BrandReader implements BrandReaderInterface
             return $this->restApiError->addBrandNoPermissionError($restResponse);
         }
 
-        $restBrandsResponseAttributesTransfer = $this->brandsMapper
+        $restBrandsResponseAttributesTransfer = $this->brandMapper
             ->mapRestBrandsResponseAttributesTransfer(
                 $brandResponseTransfer->getBrand()
             );
@@ -125,7 +125,7 @@ class BrandReader implements BrandReaderInterface
                 continue;
             }
 
-            $restBrandsResponseAttributesTransfer = $this->brandsMapper
+            $restBrandsResponseAttributesTransfer = $this->brandMapper
                 ->mapRestBrandsResponseAttributesTransfer($brandTransfer);
 
             $restResource = $this->restResourceBuilder->createRestResource(

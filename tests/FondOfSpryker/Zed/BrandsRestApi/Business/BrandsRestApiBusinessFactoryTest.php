@@ -5,7 +5,7 @@ namespace FondOfSpryker\Zed\BrandsRestApi\Business;
 use Codeception\Test\Unit;
 use FondOfSpryker\Zed\Brand\Business\BrandFacadeInterface;
 use FondOfSpryker\Zed\BrandsRestApi\BrandsRestApiDependencyProvider;
-use FondOfSpryker\Zed\BrandsRestApi\Business\Reader\BrandsReaderInterface;
+use FondOfSpryker\Zed\BrandsRestApi\Business\Reader\BrandReaderInterface;
 use FondOfSpryker\Zed\BrandsRestApi\Persistence\BrandsRestApiRepository;
 use Spryker\Zed\Kernel\Container;
 
@@ -56,7 +56,7 @@ class BrandsRestApiBusinessFactoryTest extends Unit
     /**
      * @return void
      */
-    public function testCreateBrandsReader(): void
+    public function testCreateBrandReader(): void
     {
         $this->containerMock->expects($this->atLeastOnce())
             ->method('has')
@@ -68,8 +68,8 @@ class BrandsRestApiBusinessFactoryTest extends Unit
             ->willReturn($this->brandFacadeInterfaceMock);
 
         $this->assertInstanceOf(
-            BrandsReaderInterface::class,
-            $this->brandsRestApiBusinessFactory->createBrandsReader()
+            BrandReaderInterface::class,
+            $this->brandsRestApiBusinessFactory->createBrandReader()
         );
     }
 }

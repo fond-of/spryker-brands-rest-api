@@ -23,7 +23,7 @@ class BrandReaderTest extends Unit
     /**
      * @var \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandReader
      */
-    protected $brandsReader;
+    protected $brandReader;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceBuilderInterface
@@ -38,7 +38,7 @@ class BrandReaderTest extends Unit
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandMapperInterface
      */
-    protected $brandsMapperInterfaceMock;
+    protected $brandMapperInterfaceMock;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface
@@ -125,7 +125,7 @@ class BrandReaderTest extends Unit
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->brandsMapperInterfaceMock = $this->getMockBuilder(BrandMapperInterface::class)
+        $this->brandMapperInterfaceMock = $this->getMockBuilder(BrandMapperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -181,10 +181,10 @@ class BrandReaderTest extends Unit
 
         $this->id = 'id';
 
-        $this->brandsReader = new BrandReader(
+        $this->brandReader = new BrandReader(
             $this->restResourceBuilderInterfaceMock,
             $this->brandsRestApiToBrandClientInterfaceMock,
-            $this->brandsMapperInterfaceMock,
+            $this->brandMapperInterfaceMock,
             $this->brandsRestApiClientInterfaceMock,
             $this->restApiErrorInterfaceMock,
             $this->restApiValidatorInterfaceMock
@@ -217,7 +217,7 @@ class BrandReaderTest extends Unit
             ->with($this->brandTransferMock, $this->restUserTransferMock)
             ->willReturn(true);
 
-        $this->brandsMapperInterfaceMock->expects($this->atLeastOnce())
+        $this->brandMapperInterfaceMock->expects($this->atLeastOnce())
             ->method('mapRestBrandsResponseAttributesTransfer')
             ->willReturn($this->restBrandsResponseAttributesTransferMock);
 
@@ -236,7 +236,7 @@ class BrandReaderTest extends Unit
 
         $this->assertInstanceOf(
             RestResponseInterface::class,
-            $this->brandsReader->getActiveBrands($this->restRequestInterfaceMock)
+            $this->brandReader->getActiveBrands($this->restRequestInterfaceMock)
         );
     }
 
@@ -268,7 +268,7 @@ class BrandReaderTest extends Unit
 
         $this->assertInstanceOf(
             RestResponseInterface::class,
-            $this->brandsReader->getActiveBrands($this->restRequestInterfaceMock)
+            $this->brandReader->getActiveBrands($this->restRequestInterfaceMock)
         );
     }
 
@@ -310,7 +310,7 @@ class BrandReaderTest extends Unit
             ->with($this->brandTransferMock, $this->restUserTransferMock)
             ->willReturn(true);
 
-        $this->brandsMapperInterfaceMock->expects($this->atLeastOnce())
+        $this->brandMapperInterfaceMock->expects($this->atLeastOnce())
             ->method('mapRestBrandsResponseAttributesTransfer')
             ->with($this->brandTransferMock)
             ->willReturn($this->restBrandsResponseAttributesTransferMock);
@@ -334,7 +334,7 @@ class BrandReaderTest extends Unit
 
         $this->assertInstanceOf(
             RestResponseInterface::class,
-            $this->brandsReader->findBrandByUuid(
+            $this->brandReader->findBrandByUuid(
                 $this->restRequestInterfaceMock
             )
         );
@@ -364,7 +364,7 @@ class BrandReaderTest extends Unit
 
         $this->assertInstanceOf(
             RestResponseInterface::class,
-            $this->brandsReader->findBrandByUuid(
+            $this->brandReader->findBrandByUuid(
                 $this->restRequestInterfaceMock
             )
         );
@@ -402,7 +402,7 @@ class BrandReaderTest extends Unit
 
         $this->assertInstanceOf(
             RestResponseInterface::class,
-            $this->brandsReader->findBrandByUuid(
+            $this->brandReader->findBrandByUuid(
                 $this->restRequestInterfaceMock
             )
         );
@@ -453,7 +453,7 @@ class BrandReaderTest extends Unit
 
         $this->assertInstanceOf(
             RestResponseInterface::class,
-            $this->brandsReader->findBrandByUuid(
+            $this->brandReader->findBrandByUuid(
                 $this->restRequestInterfaceMock
             )
         );

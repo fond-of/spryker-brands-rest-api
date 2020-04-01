@@ -15,7 +15,7 @@ interface BrandReaderInterface
     /**
      * @param \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceBuilderInterface $restResourceBuilder
      * @param \FondOfSpryker\Glue\BrandsRestApi\Dependency\Client\BrandsRestApiToBrandClientInterface $brandClient
-     * @param \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandMapperInterface $brandsMapper
+     * @param \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandMapperInterface $brandMapper
      * @param \FondOfSpryker\Client\BrandsRestApi\BrandsRestApiClientInterface $brandsRestApiClient
      * @param \FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiErrorInterface $restApiError
      * @param \FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiValidatorInterface $restApiValidator
@@ -23,7 +23,7 @@ interface BrandReaderInterface
     public function __construct(
         RestResourceBuilderInterface $restResourceBuilder,
         BrandsRestApiToBrandClientInterface $brandClient,
-        BrandMapperInterface $brandsMapper,
+        BrandMapperInterface $brandMapper,
         BrandsRestApiClientInterface $brandsRestApiClient,
         RestApiErrorInterface $restApiError,
         RestApiValidatorInterface $restApiValidator
