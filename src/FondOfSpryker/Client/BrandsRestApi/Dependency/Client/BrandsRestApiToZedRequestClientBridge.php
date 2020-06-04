@@ -23,7 +23,7 @@ class BrandsRestApiToZedRequestClientBridge implements BrandsRestApiToZedRequest
     /**
      * @param string $url
      * @param \Spryker\Shared\Kernel\Transfer\TransferInterface $object
-     * @param null $requestOptions
+     * @param array|null $requestOptions
      *
      * @return \Spryker\Shared\Kernel\Transfer\TransferInterface
      */
