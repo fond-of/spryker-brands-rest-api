@@ -1,6 +1,6 @@
 <?php
 
-namespace FondOfSpryker\Glue\BrandsRestApi\Plugin;
+namespace FondOfSpryker\Glue\BrandsRestApi\Plugin\GlueApplicationExtension;
 
 use FondOfSpryker\Glue\BrandsRestApi\BrandsRestApiConfig;
 use Generated\Shared\Transfer\RestBrandsRequestAttributesTransfer;
@@ -22,10 +22,8 @@ class BrandsResourceRoutePlugin extends AbstractPlugin implements ResourceRouteP
     public function configure(
         ResourceRouteCollectionInterface $resourceRouteCollection
     ): ResourceRouteCollectionInterface {
-        $resourceRouteCollection
+        return $resourceRouteCollection
             ->addGet(BrandsRestApiConfig::ACTION_BRANDS_GET, true);
-
-        return $resourceRouteCollection;
     }
 
     /**

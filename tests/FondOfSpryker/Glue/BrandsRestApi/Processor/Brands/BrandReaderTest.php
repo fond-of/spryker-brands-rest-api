@@ -236,7 +236,7 @@ class BrandReaderTest extends Unit
 
         $this->assertInstanceOf(
             RestResponseInterface::class,
-            $this->brandReader->getActiveBrands($this->restRequestInterfaceMock)
+            $this->brandReader->findBrands($this->restRequestInterfaceMock)
         );
     }
 
@@ -268,7 +268,7 @@ class BrandReaderTest extends Unit
 
         $this->assertInstanceOf(
             RestResponseInterface::class,
-            $this->brandReader->getActiveBrands($this->restRequestInterfaceMock)
+            $this->brandReader->findBrands($this->restRequestInterfaceMock)
         );
     }
 

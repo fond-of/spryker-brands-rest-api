@@ -3,7 +3,7 @@
 namespace FondOfSpryker\Glue\BrandsRestApi\Dependency\Client;
 
 use FondOfSpryker\Client\Brand\BrandClientInterface;
-use Generated\Shared\Transfer\BrandCollectionTransfer;
+use Generated\Shared\Transfer\BrandListTransfer;
 
 class BrandsRestApiToBrandClientBridge implements BrandsRestApiToBrandClientInterface
 {
@@ -21,10 +21,12 @@ class BrandsRestApiToBrandClientBridge implements BrandsRestApiToBrandClientInte
     }
 
     /**
-     * @return \Generated\Shared\Transfer\BrandCollectionTransfer
+     * @param \Generated\Shared\Transfer\BrandListTransfer $brandListTransfer
+     *
+     * @return \Generated\Shared\Transfer\BrandListTransfer
      */
-    public function getActiveBrands(): BrandCollectionTransfer
+    public function findBrands(BrandListTransfer $brandListTransfer): BrandListTransfer
     {
-        return $this->brandClient->getActiveBrands();
+        return $this->brandClient->findBrands($brandListTransfer);
     }
 }
