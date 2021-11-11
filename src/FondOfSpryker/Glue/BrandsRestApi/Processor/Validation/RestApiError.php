@@ -17,9 +17,9 @@ class RestApiError implements RestApiErrorInterface
     public function addBrandUuidMissingError(RestResponseInterface $restResponse): RestResponseInterface
     {
         $restErrorMessageTransfer = (new RestErrorMessageTransfer())
-            ->setCode(BrandsRestApiConfig::RESPONSE_CODE_EXTERNAL_REFERENCE_MISSING)
+            ->setCode(BrandsRestApiConfig::RESPONSE_CODE_UUID_MISSING)
             ->setStatus(Response::HTTP_BAD_REQUEST)
-            ->setDetail(BrandsRestApiConfig::RESPONSE_DETAILS_EXTERNAL_REFERENCE_MISSING);
+            ->setDetail(BrandsRestApiConfig::RESPONSE_DETAILS_UUID_MISSING);
 
         return $restResponse->addError($restErrorMessageTransfer);
     }

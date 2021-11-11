@@ -4,24 +4,24 @@ namespace FondOfSpryker\Glue\BrandsRestApi\Dependency\Client;
 
 use Codeception\Test\Unit;
 use FondOfSpryker\Client\Brand\BrandClientInterface;
-use Generated\Shared\Transfer\BrandCollectionTransfer;
+use Generated\Shared\Transfer\BrandListTransfer;
 
 class BrandsRestApiToBrandClientBridgeTest extends Unit
 {
     /**
      * @var \FondOfSpryker\Glue\BrandsRestApi\Dependency\Client\BrandsRestApiToBrandClientBridge
      */
-    protected $brandsRestApiToBrandClientBridge;
+    protected $bridge;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\FondOfSpryker\Client\Brand\BrandClientInterface
      */
-    protected $brandClientInterfaceMock;
+    protected $brandClientMock;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\BrandCollectionTransfer
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\BrandListTransfer
      */
-    protected $brandCollectionTransferMock;
+    protected $brandListTransferMock;
 
     /**
      * @return void
@@ -30,28 +30,32 @@ class BrandsRestApiToBrandClientBridgeTest extends Unit
     {
         parent::_before();
 
-        $this->brandClientInterfaceMock = $this->getMockBuilder(BrandClientInterface::class)
+        $this->brandClientMock = $this->getMockBuilder(BrandClientInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->brandCollectionTransferMock = $this->getMockBuilder(BrandCollectionTransfer::class)
+        $this->brandListTransferMock = $this->getMockBuilder(BrandListTransfer::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->brandsRestApiToBrandClientBridge = new BrandsRestApiToBrandClientBridge(
-            $this->brandClientInterfaceMock
+        $this->bridge = new BrandsRestApiToBrandClientBridge(
+            $this->brandClientMock
         );
     }
 
     /**
      * @return void
      */
-    public function testGetActiveBrands(): void
+    public function testFindBrands(): void
     {
-        $this->brandClientInterfaceMock->expects($this->atLeastOnce())
-            ->method('getActiveBrands')
-            ->willReturn($this->brandCollectionTransferMock);
+        $this->brandClientMock->expects(static::atLeastOnce())
+            ->method('findBrands')
+            ->with($this->brandListTransferMock)
+            ->willReturn($this->brandListTransferMock);
 
-        $this->assertInstanceOf(BrandCollectionTransfer::class, $this->brandsRestApiToBrandClientBridge->getActiveBrands());
+        static::assertEquals(
+            $this->brandListTransferMock,
+            $this->bridge->findBrands($this->brandListTransferMock)
+        );
     }
 }

@@ -2,17 +2,15 @@
 
 namespace FondOfSpryker\Glue\BrandsRestApi\Processor\Brands;
 
+use ArrayObject;
 use Codeception\Test\Unit;
-use FondOfSpryker\Client\BrandsRestApi\BrandsRestApiClientInterface;
+use FondOfOryx\Glue\BrandsRestApiExtension\Dependency\Plugin\FilterFieldsExpanderPluginInterface;
 use FondOfSpryker\Glue\BrandsRestApi\BrandsRestApiConfig;
 use FondOfSpryker\Glue\BrandsRestApi\Dependency\Client\BrandsRestApiToBrandClientInterface;
 use FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiErrorInterface;
-use FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiValidatorInterface;
-use Generated\Shared\Transfer\BrandCollectionTransfer;
-use Generated\Shared\Transfer\BrandResponseTransfer;
+use Generated\Shared\Transfer\BrandListTransfer;
 use Generated\Shared\Transfer\BrandTransfer;
 use Generated\Shared\Transfer\RestBrandsResponseAttributesTransfer;
-use Generated\Shared\Transfer\RestUserTransfer;
 use Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceBuilderInterface;
 use Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceInterface;
 use Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface;
@@ -21,39 +19,44 @@ use Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface;
 class BrandReaderTest extends Unit
 {
     /**
-     * @var \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandReader
-     */
-    protected $brandReader;
-
-    /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceBuilderInterface
      */
-    protected $restResourceBuilderInterfaceMock;
+    protected $restResourceBuilderMock;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\FondOfSpryker\Glue\BrandsRestApi\Dependency\Client\BrandsRestApiToBrandClientInterface
      */
-    protected $brandsRestApiToBrandClientInterfaceMock;
+    protected $brandClientMock;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandMapperInterface
      */
-    protected $brandMapperInterfaceMock;
+    protected $brandMapperMock;
+
+    /**
+     * @var \PHPUnit\Framework\MockObject\MockObject|\FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiErrorInterface
+     */
+    protected $restApiErrorMock;
+
+    /**
+     * @var array<\FondOfOryx\Glue\BrandsRestApiExtension\Dependency\Plugin\FilterFieldsExpanderPluginInterface|\PHPUnit\Framework\MockObject\MockObject>
+     */
+    protected $filterFieldsExpanderPluginMocks;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface
      */
-    protected $restRequestInterfaceMock;
+    protected $restRequestMock;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface
      */
-    protected $restResponseInterfaceMock;
+    protected $restResponseMock;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\BrandCollectionTransfer
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\BrandListTransfer
      */
-    protected $brandCollectionTransferMock;
+    protected $brandListTransferMock;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\BrandTransfer
@@ -61,54 +64,19 @@ class BrandReaderTest extends Unit
     protected $brandTransferMock;
 
     /**
-     * @var array
-     */
-    protected $brandTransferMocks;
-
-    /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\RestBrandsResponseAttributesTransfer
      */
     protected $restBrandsResponseAttributesTransferMock;
 
     /**
-     * @var string
-     */
-    protected $uuid;
-
-    /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceInterface
      */
-    protected $restResourceInterfaceMock;
+    protected $restResourceMock;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\FondOfSpryker\Client\BrandsRestApi\BrandsRestApiClientInterface
+     * @var \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandReader
      */
-    protected $brandsRestApiClientInterfaceMock;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiErrorInterface
-     */
-    protected $restApiErrorInterfaceMock;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiValidatorInterface
-     */
-    protected $restApiValidatorInterfaceMock;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\RestUserTransfer
-     */
-    protected $restUserTransferMock;
-
-    /**
-     * @var string
-     */
-    protected $id;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\BrandResponseTransfer
-     */
-    protected $brandResponseTransferMock;
+    protected $brandReader;
 
     /**
      * @return void
@@ -117,27 +85,37 @@ class BrandReaderTest extends Unit
     {
         parent::_before();
 
-        $this->restResourceBuilderInterfaceMock = $this->getMockBuilder(RestResourceBuilderInterface::class)
+        $this->restResourceBuilderMock = $this->getMockBuilder(RestResourceBuilderInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->brandsRestApiToBrandClientInterfaceMock = $this->getMockBuilder(BrandsRestApiToBrandClientInterface::class)
+        $this->brandClientMock = $this->getMockBuilder(BrandsRestApiToBrandClientInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->brandMapperInterfaceMock = $this->getMockBuilder(BrandMapperInterface::class)
+        $this->brandMapperMock = $this->getMockBuilder(BrandMapperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->restRequestInterfaceMock = $this->getMockBuilder(RestRequestInterface::class)
+        $this->restApiErrorMock = $this->getMockBuilder(RestApiErrorInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->restResponseInterfaceMock = $this->getMockBuilder(RestResponseInterface::class)
+        $this->filterFieldsExpanderPluginMocks = [
+            $this->getMockBuilder(FilterFieldsExpanderPluginInterface::class)
+                ->disableOriginalConstructor()
+                ->getMock(),
+        ];
+
+        $this->restRequestMock = $this->getMockBuilder(RestRequestInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->brandCollectionTransferMock = $this->getMockBuilder(BrandCollectionTransfer::class)
+        $this->restResponseMock = $this->getMockBuilder(RestResponseInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->brandListTransferMock = $this->getMockBuilder(BrandListTransfer::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -145,130 +123,83 @@ class BrandReaderTest extends Unit
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->brandTransferMocks = [
-            $this->brandTransferMock,
-        ];
-
         $this->restBrandsResponseAttributesTransferMock = $this->getMockBuilder(RestBrandsResponseAttributesTransfer::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->uuid = 'uuid';
-
-        $this->restResourceInterfaceMock = $this->getMockBuilder(RestResourceInterface::class)
+        $this->restResourceMock = $this->getMockBuilder(RestResourceInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-
-        $this->brandsRestApiClientInterfaceMock = $this->getMockBuilder(BrandsRestApiClientInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->restApiErrorInterfaceMock = $this->getMockBuilder(RestApiErrorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->restApiValidatorInterfaceMock = $this->getMockBuilder(RestApiValidatorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->restUserTransferMock = $this->getMockBuilder(RestUserTransfer::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->brandResponseTransferMock = $this->getMockBuilder(BrandResponseTransfer::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->id = 'id';
 
         $this->brandReader = new BrandReader(
-            $this->restResourceBuilderInterfaceMock,
-            $this->brandsRestApiToBrandClientInterfaceMock,
-            $this->brandMapperInterfaceMock,
-            $this->brandsRestApiClientInterfaceMock,
-            $this->restApiErrorInterfaceMock,
-            $this->restApiValidatorInterfaceMock
+            $this->restResourceBuilderMock,
+            $this->brandClientMock,
+            $this->brandMapperMock,
+            $this->restApiErrorMock,
+            $this->filterFieldsExpanderPluginMocks
         );
     }
 
     /**
      * @return void
      */
-    public function testGetActiveBrands(): void
+    public function testFindBrands(): void
     {
-        $this->restResourceBuilderInterfaceMock->expects($this->atLeastOnce())
+        $uuid = 'cf462b2e-42f6-11ec-81d3-0242ac130003';
+
+        $filterFieldTransfers = new ArrayObject();
+
+        $this->filterFieldsExpanderPluginMocks[0]->expects(static::atLeastOnce())
+            ->method('expand')
+            ->with($this->restRequestMock, static::callback(
+                static function (ArrayObject $filterFieldTransfers) {
+                    return $filterFieldTransfers->count() === 0;
+                }
+            ))->willReturn($filterFieldTransfers);
+
+        $this->brandClientMock->expects(static::atLeastOnce())
+            ->method('findBrands')
+            ->with(
+                static::callback(
+                    static function (BrandListTransfer $brandListTransfer) use ($filterFieldTransfers) {
+                        return $brandListTransfer->getFilterFields() === $filterFieldTransfers;
+                    }
+                )
+            )->willReturn($this->brandListTransferMock);
+
+        $this->restResourceBuilderMock->expects(static::atLeastOnce())
             ->method('createRestResponse')
-            ->willReturn($this->restResponseInterfaceMock);
+            ->willReturn($this->restResponseMock);
 
-        $this->brandsRestApiToBrandClientInterfaceMock->expects($this->atLeastOnce())
-            ->method('getActiveBrands')
-            ->willReturn($this->brandCollectionTransferMock);
-
-        $this->brandCollectionTransferMock->expects($this->atLeastOnce())
+        $this->brandListTransferMock->expects(static::atLeastOnce())
             ->method('getBrands')
-            ->willReturn($this->brandTransferMocks);
+            ->willReturn(new ArrayObject([$this->brandTransferMock]));
 
-        $this->restRequestInterfaceMock->expects($this->atLeastOnce())
-            ->method('getRestUser')
-            ->willReturn($this->restUserTransferMock);
-
-        $this->restApiValidatorInterfaceMock->expects($this->atLeastOnce())
-            ->method('isBrandAssignedToRestUser')
-            ->with($this->brandTransferMock, $this->restUserTransferMock)
-            ->willReturn(true);
-
-        $this->brandMapperInterfaceMock->expects($this->atLeastOnce())
+        $this->brandMapperMock->expects(static::atLeastOnce())
             ->method('mapRestBrandsResponseAttributesTransfer')
+            ->with($this->brandTransferMock)
             ->willReturn($this->restBrandsResponseAttributesTransferMock);
 
-        $this->brandTransferMock->expects($this->atLeastOnce())
+        $this->brandTransferMock->expects(static::atLeastOnce())
             ->method('getUuid')
-            ->willReturn($this->uuid);
+            ->willReturn($uuid);
 
-        $this->restResourceBuilderInterfaceMock->expects($this->atLeastOnce())
+        $this->restResourceBuilderMock->expects(static::atLeastOnce())
             ->method('createRestResource')
-            ->willReturn($this->restResourceInterfaceMock);
+            ->with(
+                BrandsRestApiConfig::RESOURCE_BRANDS,
+                $uuid,
+                $this->restBrandsResponseAttributesTransferMock
+            )->willReturn($this->restResourceMock);
 
-        $this->restResponseInterfaceMock->expects($this->atLeastOnce())
+        $this->restResponseMock->expects(static::atLeastOnce())
             ->method('addResource')
-            ->with($this->restResourceInterfaceMock)
-            ->willReturnSelf();
+            ->with($this->restResourceMock)
+            ->willReturn($this->restResponseMock);
 
-        $this->assertInstanceOf(
-            RestResponseInterface::class,
-            $this->brandReader->findBrands($this->restRequestInterfaceMock)
-        );
-    }
-
-    /**
-     * @return void
-     */
-    public function testGetActiveBrandsValidatorFail(): void
-    {
-        $this->restResourceBuilderInterfaceMock->expects($this->atLeastOnce())
-            ->method('createRestResponse')
-            ->willReturn($this->restResponseInterfaceMock);
-
-        $this->brandsRestApiToBrandClientInterfaceMock->expects($this->atLeastOnce())
-            ->method('getActiveBrands')
-            ->willReturn($this->brandCollectionTransferMock);
-
-        $this->brandCollectionTransferMock->expects($this->atLeastOnce())
-            ->method('getBrands')
-            ->willReturn($this->brandTransferMocks);
-
-        $this->restRequestInterfaceMock->expects($this->atLeastOnce())
-            ->method('getRestUser')
-            ->willReturn($this->restUserTransferMock);
-
-        $this->restApiValidatorInterfaceMock->expects($this->atLeastOnce())
-            ->method('isBrandAssignedToRestUser')
-            ->with($this->brandTransferMock, $this->restUserTransferMock)
-            ->willReturn(false);
-
-        $this->assertInstanceOf(
-            RestResponseInterface::class,
-            $this->brandReader->findBrands($this->restRequestInterfaceMock)
+        static::assertEquals(
+            $this->restResponseMock,
+            $this->brandReader->findBrands($this->restRequestMock)
         );
     }
 
@@ -277,185 +208,187 @@ class BrandReaderTest extends Unit
      */
     public function testFindBrandByUuid(): void
     {
-        $this->restResourceBuilderInterfaceMock->expects($this->atLeastOnce())
+        $uuid = 'cf462b2e-42f6-11ec-81d3-0242ac130003';
+        $filterFieldTransfers = new ArrayObject();
+
+        $this->restResourceBuilderMock->expects(static::atLeastOnce())
             ->method('createRestResponse')
-            ->willReturn($this->restResponseInterfaceMock);
+            ->willReturn($this->restResponseMock);
 
-        $this->restRequestInterfaceMock->expects($this->atLeastOnce())
+        $this->restRequestMock->expects(static::atLeastOnce())
             ->method('getResource')
-            ->willReturn($this->restResourceInterfaceMock);
+            ->willReturn($this->restResourceMock);
 
-        $this->restResourceInterfaceMock->expects($this->atLeastOnce())
+        $this->restResourceMock->expects(static::atLeastOnce())
             ->method('getId')
-            ->willReturn($this->id);
+            ->willReturn($uuid);
 
-        $this->brandsRestApiClientInterfaceMock->expects($this->atLeastOnce())
-            ->method('findBrandByUuid')
-            ->willReturn($this->brandResponseTransferMock);
+        $this->restApiErrorMock->expects(static::never())
+            ->method('addBrandUuidMissingError');
 
-        $this->brandResponseTransferMock->expects($this->atLeastOnce())
-            ->method('getIsSuccessful')
-            ->willReturn(true);
+        $this->filterFieldsExpanderPluginMocks[0]->expects(static::atLeastOnce())
+            ->method('expand')
+            ->with($this->restRequestMock, static::callback(
+                static function (ArrayObject $filterFieldTransfers) {
+                    return $filterFieldTransfers->count() === 0;
+                }
+            ))->willReturn($filterFieldTransfers);
 
-        $this->brandResponseTransferMock->expects($this->atLeastOnce())
-            ->method('getBrand')
-            ->willReturn($this->brandTransferMock);
+        $this->brandClientMock->expects(static::atLeastOnce())
+            ->method('findBrands')
+            ->with(
+                static::callback(
+                    static function (BrandListTransfer $brandListTransfer) use ($filterFieldTransfers) {
+                        return $brandListTransfer->getFilterFields() === $filterFieldTransfers;
+                    }
+                )
+            )->willReturn($this->brandListTransferMock);
 
-        $this->restRequestInterfaceMock->expects($this->atLeastOnce())
-            ->method('getRestUser')
-            ->willReturn($this->restUserTransferMock);
+        $this->brandListTransferMock->expects(static::atLeastOnce())
+            ->method('getBrands')
+            ->willReturn(new ArrayObject([$this->brandTransferMock]));
 
-        $this->restApiValidatorInterfaceMock->expects($this->atLeastOnce())
-            ->method('isBrandAssignedToRestUser')
-            ->with($this->brandTransferMock, $this->restUserTransferMock)
-            ->willReturn(true);
+        $this->brandTransferMock->expects(static::atLeastOnce())
+            ->method('getUuid')
+            ->willReturn($uuid);
 
-        $this->brandMapperInterfaceMock->expects($this->atLeastOnce())
+        $this->restApiErrorMock->expects(static::never())
+            ->method('addBrandNotFoundError');
+
+        $this->brandMapperMock->expects(static::atLeastOnce())
             ->method('mapRestBrandsResponseAttributesTransfer')
             ->with($this->brandTransferMock)
             ->willReturn($this->restBrandsResponseAttributesTransferMock);
 
-        $this->brandTransferMock->expects($this->atLeastOnce())
-            ->method('getUuid')
-            ->willReturn($this->uuid);
-
-        $this->restResourceBuilderInterfaceMock->expects($this->atLeastOnce())
+        $this->restResourceBuilderMock->expects(static::atLeastOnce())
             ->method('createRestResource')
             ->with(
                 BrandsRestApiConfig::RESOURCE_BRANDS,
-                $this->uuid,
+                $uuid,
                 $this->restBrandsResponseAttributesTransferMock
-            )->willReturn($this->restResourceInterfaceMock);
+            )->willReturn($this->restResourceMock);
 
-        $this->restResponseInterfaceMock->expects($this->atLeastOnce())
+        $this->restResponseMock->expects(static::atLeastOnce())
             ->method('addResource')
-            ->with($this->restResourceInterfaceMock)
-            ->willReturnSelf();
+            ->with($this->restResourceMock)
+            ->willReturn($this->restResponseMock);
 
-        $this->assertInstanceOf(
-            RestResponseInterface::class,
-            $this->brandReader->findBrandByUuid(
-                $this->restRequestInterfaceMock
-            )
+        static::assertEquals(
+            $this->restResponseMock,
+            $this->brandReader->findBrandByUuid($this->restRequestMock)
         );
     }
 
     /**
      * @return void
      */
-    public function testFindBrandByUuidBrandUuidMissing(): void
+    public function testFindBrandByUuidWithoutResourceId(): void
     {
-        $this->restResourceBuilderInterfaceMock->expects($this->atLeastOnce())
+        $uuid = null;
+
+        $this->restResourceBuilderMock->expects(static::atLeastOnce())
             ->method('createRestResponse')
-            ->willReturn($this->restResponseInterfaceMock);
+            ->willReturn($this->restResponseMock);
 
-        $this->restRequestInterfaceMock->expects($this->atLeastOnce())
+        $this->restRequestMock->expects(static::atLeastOnce())
             ->method('getResource')
-            ->willReturn($this->restResourceInterfaceMock);
+            ->willReturn($this->restResourceMock);
 
-        $this->restResourceInterfaceMock->expects($this->atLeastOnce())
+        $this->restResourceMock->expects(static::atLeastOnce())
             ->method('getId')
-            ->willReturn(null);
+            ->willReturn($uuid);
 
-        $this->restApiErrorInterfaceMock->expects($this->atLeastOnce())
+        $this->restApiErrorMock->expects(static::atLeastOnce())
             ->method('addBrandUuidMissingError')
-            ->with($this->restResponseInterfaceMock)
-            ->willReturn($this->restResponseInterfaceMock);
+            ->with($this->restResponseMock)
+            ->willReturn($this->restResponseMock);
 
-        $this->assertInstanceOf(
-            RestResponseInterface::class,
-            $this->brandReader->findBrandByUuid(
-                $this->restRequestInterfaceMock
-            )
+        $this->filterFieldsExpanderPluginMocks[0]->expects(static::never())
+            ->method('expand');
+
+        $this->brandClientMock->expects(static::never())
+            ->method('findBrands');
+
+        $this->restApiErrorMock->expects(static::never())
+            ->method('addBrandNotFoundError');
+
+        $this->brandMapperMock->expects(static::never())
+            ->method('mapRestBrandsResponseAttributesTransfer');
+
+        $this->restResourceBuilderMock->expects(static::never())
+            ->method('createRestResource');
+
+        $this->restResponseMock->expects(static::never())
+            ->method('addResource');
+
+        static::assertEquals(
+            $this->restResponseMock,
+            $this->brandReader->findBrandByUuid($this->restRequestMock)
         );
     }
 
     /**
      * @return void
      */
-    public function testFindBrandByUuidBrandNotFound(): void
+    public function testFindBrandByUuidWithNonExistingBrand(): void
     {
-        $this->restResourceBuilderInterfaceMock->expects($this->atLeastOnce())
+        $uuid = 'cf462b2e-42f6-11ec-81d3-0242ac130003';
+        $filterFieldTransfers = new ArrayObject();
+
+        $this->restResourceBuilderMock->expects(static::atLeastOnce())
             ->method('createRestResponse')
-            ->willReturn($this->restResponseInterfaceMock);
+            ->willReturn($this->restResponseMock);
 
-        $this->restRequestInterfaceMock->expects($this->atLeastOnce())
+        $this->restRequestMock->expects(static::atLeastOnce())
             ->method('getResource')
-            ->willReturn($this->restResourceInterfaceMock);
+            ->willReturn($this->restResourceMock);
 
-        $this->restResourceInterfaceMock->expects($this->atLeastOnce())
+        $this->restResourceMock->expects(static::atLeastOnce())
             ->method('getId')
-            ->willReturn($this->id);
+            ->willReturn($uuid);
 
-        $this->brandsRestApiClientInterfaceMock->expects($this->atLeastOnce())
-            ->method('findBrandByUuid')
-            ->willReturn($this->brandResponseTransferMock);
+        $this->restApiErrorMock->expects(static::never())
+            ->method('addBrandUuidMissingError');
 
-        $this->brandResponseTransferMock->expects($this->atLeastOnce())
-            ->method('getIsSuccessful')
-            ->willReturn(false);
+        $this->filterFieldsExpanderPluginMocks[0]->expects(static::atLeastOnce())
+            ->method('expand')
+            ->with($this->restRequestMock, static::callback(
+                static function (ArrayObject $filterFieldTransfers) {
+                    return $filterFieldTransfers->count() === 0;
+                }
+            ))->willReturn($filterFieldTransfers);
 
-        $this->restApiErrorInterfaceMock->expects($this->atLeastOnce())
+        $this->brandClientMock->expects(static::atLeastOnce())
+            ->method('findBrands')
+            ->with(
+                static::callback(
+                    static function (BrandListTransfer $brandListTransfer) use ($filterFieldTransfers) {
+                        return $brandListTransfer->getFilterFields() === $filterFieldTransfers;
+                    }
+                )
+            )->willReturn($this->brandListTransferMock);
+
+        $this->brandListTransferMock->expects(static::atLeastOnce())
+            ->method('getBrands')
+            ->willReturn(new ArrayObject());
+
+        $this->restApiErrorMock->expects(static::atLeastOnce())
             ->method('addBrandNotFoundError')
-            ->with($this->restResponseInterfaceMock)
-            ->willReturn($this->restResponseInterfaceMock);
+            ->with($this->restResponseMock)
+            ->willReturn($this->restResponseMock);
 
-        $this->assertInstanceOf(
-            RestResponseInterface::class,
-            $this->brandReader->findBrandByUuid(
-                $this->restRequestInterfaceMock
-            )
-        );
-    }
+        $this->brandMapperMock->expects(static::never())
+            ->method('mapRestBrandsResponseAttributesTransfer');
 
-    /**
-     * @return void
-     */
-    public function testFindBrandByUuidBrandNoPermission(): void
-    {
-        $this->restResourceBuilderInterfaceMock->expects($this->atLeastOnce())
-            ->method('createRestResponse')
-            ->willReturn($this->restResponseInterfaceMock);
+        $this->restResourceBuilderMock->expects(static::never())
+            ->method('createRestResource');
 
-        $this->restRequestInterfaceMock->expects($this->atLeastOnce())
-            ->method('getResource')
-            ->willReturn($this->restResourceInterfaceMock);
+        $this->restResponseMock->expects(static::never())
+            ->method('addResource');
 
-        $this->restResourceInterfaceMock->expects($this->atLeastOnce())
-            ->method('getId')
-            ->willReturn($this->id);
-
-        $this->brandsRestApiClientInterfaceMock->expects($this->atLeastOnce())
-            ->method('findBrandByUuid')
-            ->willReturn($this->brandResponseTransferMock);
-
-        $this->brandResponseTransferMock->expects($this->atLeastOnce())
-            ->method('getIsSuccessful')
-            ->willReturn(true);
-
-        $this->brandResponseTransferMock->expects($this->atLeastOnce())
-            ->method('getBrand')
-            ->willReturn($this->brandTransferMock);
-
-        $this->restRequestInterfaceMock->expects($this->atLeastOnce())
-            ->method('getRestUser')
-            ->willReturn($this->restUserTransferMock);
-
-        $this->restApiValidatorInterfaceMock->expects($this->atLeastOnce())
-            ->method('isBrandAssignedToRestUser')
-            ->with($this->brandTransferMock, $this->restUserTransferMock)
-            ->willReturn(false);
-
-        $this->restApiErrorInterfaceMock->expects($this->atLeastOnce())
-            ->method('addBrandNoPermissionError')
-            ->with($this->restResponseInterfaceMock)
-            ->willReturn($this->restResponseInterfaceMock);
-
-        $this->assertInstanceOf(
-            RestResponseInterface::class,
-            $this->brandReader->findBrandByUuid(
-                $this->restRequestInterfaceMock
-            )
+        static::assertEquals(
+            $this->restResponseMock,
+            $this->brandReader->findBrandByUuid($this->restRequestMock)
         );
     }
 }

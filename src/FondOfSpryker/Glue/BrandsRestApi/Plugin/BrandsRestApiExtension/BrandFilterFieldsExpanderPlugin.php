@@ -4,6 +4,7 @@ namespace FondOfSpryker\Glue\BrandsRestApi\Plugin\BrandsRestApiExtension;
 
 use ArrayObject;
 use FondOfOryx\Glue\PriceListsRestApiExtension\Dependency\Plugin\FilterFieldsExpanderPluginInterface;
+use FondOfSpryker\Shared\BrandsRestApi\BrandsRestApiConstants;
 use Generated\Shared\Transfer\FilterFieldTransfer;
 use Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface;
 use Spryker\Glue\Kernel\AbstractPlugin;

@@ -10,6 +10,7 @@
   ],
   "require": {
     "php": ">=7.3",
+    "fond-of-oryx/brands-rest-api-extension": "^1.0.0",
     "fond-of-spryker/brand": "dev-master",
     "spryker/glue-application": "^1.0.0"
   },
