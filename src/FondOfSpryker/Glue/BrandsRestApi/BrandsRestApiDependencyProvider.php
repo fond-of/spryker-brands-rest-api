@@ -9,6 +9,7 @@ use Spryker\Glue\Kernel\Container;
 class BrandsRestApiDependencyProvider extends AbstractBundleDependencyProvider
 {
     public const CLIENT_BRAND = 'CLIENT_BRAND';
+    public const PLUGINS_FILTER_FIELDS_EXPANDER = 'PLUGINS_FILTER_FIELDS_EXPANDER';
 
     /**
      * @param \Spryker\Glue\Kernel\Container $container
@@ -21,7 +22,7 @@ class BrandsRestApiDependencyProvider extends AbstractBundleDependencyProvider
 
         $container = $this->addBrandClient($container);
 
-        return $container;
+        return $this->addFilterFieldsExpanderPlugins($container);
     }
 
     /**
@@ -36,5 +37,29 @@ class BrandsRestApiDependencyProvider extends AbstractBundleDependencyProvider
         };
 
         return $container;
+    }
+
+    /**
+     * @param \Spryker\Glue\Kernel\Container $container
+     *
+     * @return \Spryker\Glue\Kernel\Container
+     */
+    protected function addFilterFieldsExpanderPlugins(Container $container): Container
+    {
+        $self = $this;
+
+        $container[static::PLUGINS_FILTER_FIELDS_EXPANDER] = static function () use ($self) {
+            return $self->getFilterFieldsExpanderPlugins();
+        };
+
+        return $container;
+    }
+
+    /**
+     * @return array<\FondOfOryx\Glue\BrandsRestApiExtension\Dependency\Plugin\FilterFieldsExpanderPluginInterface>
+     */
+    protected function getFilterFieldsExpanderPlugins(): array
+    {
+        return [];
     }
 }

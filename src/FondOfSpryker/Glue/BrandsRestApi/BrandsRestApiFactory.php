@@ -9,13 +9,8 @@ use FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandReader;
 use FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandReaderInterface;
 use FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiError;
 use FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiErrorInterface;
-use FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiValidator;
-use FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiValidatorInterface;
 use Spryker\Glue\Kernel\AbstractFactory;
 
-/**
- * @method \FondOfSpryker\Client\BrandsRestApi\BrandsRestApiClientInterface getClient()
- */
 class BrandsRestApiFactory extends AbstractFactory
 {
     /**
@@ -27,9 +22,8 @@ class BrandsRestApiFactory extends AbstractFactory
             $this->getResourceBuilder(),
             $this->getBrandClient(),
             $this->createBrandMapper(),
-            $this->getClient(),
             $this->createRestApiError(),
-            $this->createRestApiValidator()
+            $this->getFilterFieldsExpanderPlugins()
         );
     }
 
@@ -58,10 +52,10 @@ class BrandsRestApiFactory extends AbstractFactory
     }
 
     /**
-     * @return \FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiValidatorInterface
+     * @return array<\FondOfOryx\Glue\BrandsRestApiExtension\Dependency\Plugin\FilterFieldsExpanderPluginInterface>
      */
-    protected function createRestApiValidator(): RestApiValidatorInterface
+    protected function getFilterFieldsExpanderPlugins(): array
     {
-        return new RestApiValidator();
+        return $this->getProvidedDependency(BrandsRestApiDependencyProvider::PLUGINS_FILTER_FIELDS_EXPANDER);
     }
 }

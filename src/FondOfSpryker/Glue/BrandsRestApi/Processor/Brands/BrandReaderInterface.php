@@ -2,33 +2,11 @@
 
 namespace FondOfSpryker\Glue\BrandsRestApi\Processor\Brands;
 
-use FondOfSpryker\Client\BrandsRestApi\BrandsRestApiClientInterface;
-use FondOfSpryker\Glue\BrandsRestApi\Dependency\Client\BrandsRestApiToBrandClientInterface;
-use FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiErrorInterface;
-use FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiValidatorInterface;
-use Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceBuilderInterface;
 use Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface;
 use Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface;
 
 interface BrandReaderInterface
 {
-    /**
-     * @param \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceBuilderInterface $restResourceBuilder
-     * @param \FondOfSpryker\Glue\BrandsRestApi\Dependency\Client\BrandsRestApiToBrandClientInterface $brandClient
-     * @param \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandMapperInterface $brandMapper
-     * @param \FondOfSpryker\Client\BrandsRestApi\BrandsRestApiClientInterface $brandsRestApiClient
-     * @param \FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiErrorInterface $restApiError
-     * @param \FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiValidatorInterface $restApiValidator
-     */
-    public function __construct(
-        RestResourceBuilderInterface $restResourceBuilder,
-        BrandsRestApiToBrandClientInterface $brandClient,
-        BrandMapperInterface $brandMapper,
-        BrandsRestApiClientInterface $brandsRestApiClient,
-        RestApiErrorInterface $restApiError,
-        RestApiValidatorInterface $restApiValidator
-    );
-
     /**
      * @param \Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface $restRequest
      *
@@ -41,5 +19,5 @@ interface BrandReaderInterface
      *
      * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface
      */
-    public function getActiveBrands(RestRequestInterface $restRequest): RestResponseInterface;
+    public function findBrands(RestRequestInterface $restRequest): RestResponseInterface;
 }

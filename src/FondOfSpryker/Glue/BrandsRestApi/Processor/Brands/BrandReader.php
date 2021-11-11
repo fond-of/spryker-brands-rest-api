@@ -2,12 +2,11 @@
 
 namespace FondOfSpryker\Glue\BrandsRestApi\Processor\Brands;
 
-use FondOfSpryker\Client\BrandsRestApi\BrandsRestApiClientInterface;
+use ArrayObject;
 use FondOfSpryker\Glue\BrandsRestApi\BrandsRestApiConfig;
 use FondOfSpryker\Glue\BrandsRestApi\Dependency\Client\BrandsRestApiToBrandClientInterface;
 use FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiErrorInterface;
-use FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiValidatorInterface;
-use Generated\Shared\Transfer\BrandTransfer;
+use Generated\Shared\Transfer\BrandListTransfer;
 use Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceBuilderInterface;
 use Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface;
 use Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface;
@@ -30,42 +29,34 @@ class BrandReader implements BrandReaderInterface
     protected $brandMapper;
 
     /**
-     * @var \FondOfSpryker\Client\BrandsRestApi\BrandsRestApiClientInterface
-     */
-    protected $brandsRestApiClient;
-
-    /**
      * @var \FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiErrorInterface
      */
     protected $restApiError;
 
     /**
-     * @var \FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiValidatorInterface
+     * @var \FondOfOryx\Glue\BrandsRestApiExtension\Dependency\Plugin\FilterFieldsExpanderPluginInterface[]
      */
-    protected $restApiValidator;
+    protected $filterFieldsExpanderPlugins;
 
     /**
      * @param \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceBuilderInterface $restResourceBuilder
      * @param \FondOfSpryker\Glue\BrandsRestApi\Dependency\Client\BrandsRestApiToBrandClientInterface $brandClient
      * @param \FondOfSpryker\Glue\BrandsRestApi\Processor\Brands\BrandMapperInterface $brandMapper
-     * @param \FondOfSpryker\Client\BrandsRestApi\BrandsRestApiClientInterface $brandsRestApiClient
      * @param \FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiErrorInterface $restApiError
-     * @param \FondOfSpryker\Glue\BrandsRestApi\Processor\Validation\RestApiValidatorInterface $restApiValidator
+     * @param array<\FondOfOryx\Glue\BrandsRestApiExtension\Dependency\Plugin\FilterFieldsExpanderPluginInterface> $filterFieldsExpanderPlugins
      */
     public function __construct(
         RestResourceBuilderInterface $restResourceBuilder,
         BrandsRestApiToBrandClientInterface $brandClient,
         BrandMapperInterface $brandMapper,
-        BrandsRestApiClientInterface $brandsRestApiClient,
         RestApiErrorInterface $restApiError,
-        RestApiValidatorInterface $restApiValidator
+        array $filterFieldsExpanderPlugins
     ) {
         $this->restResourceBuilder = $restResourceBuilder;
         $this->brandClient = $brandClient;
         $this->brandMapper = $brandMapper;
-        $this->brandsRestApiClient = $brandsRestApiClient;
         $this->restApiError = $restApiError;
-        $this->restApiValidator = $restApiValidator;
+        $this->filterFieldsExpanderPlugins = $filterFieldsExpanderPlugins;
     }
 
     /**
@@ -76,33 +67,36 @@ class BrandReader implements BrandReaderInterface
     public function findBrandByUuid(RestRequestInterface $restRequest): RestResponseInterface
     {
         $restResponse = $this->restResourceBuilder->createRestResponse();
+        $uuid = $restRequest->getResource()->getId();
 
-        if (!$restRequest->getResource()->getId()) {
+        if ($uuid === null) {
             return $this->restApiError->addBrandUuidMissingError($restResponse);
         }
 
-        $brandTransfer = (new BrandTransfer())
-            ->setUuid($restRequest->getResource()->getId());
+        $filterFieldTransfers = new ArrayObject();
 
-        $brandResponseTransfer = $this->brandsRestApiClient
-            ->findBrandByUuid($brandTransfer);
+        foreach ($this->filterFieldsExpanderPlugins as $filterFieldsExpanderPlugin) {
+            $filterFieldTransfers = $filterFieldsExpanderPlugin->expand($restRequest, $filterFieldTransfers);
+        }
 
-        if (!$brandResponseTransfer->getIsSuccessful()) {
+        $brandListTransfer = (new BrandListTransfer())
+            ->setFilterFields($filterFieldTransfers);
+
+        $brandListTransfer = $this->brandClient->findBrands($brandListTransfer);
+
+        $brandTransfers = $brandListTransfer->getBrands();
+
+        if ($brandTransfers->count() !== 1 || $brandTransfers->offsetGet(0)->getUuid() !== $uuid) {
             return $this->restApiError->addBrandNotFoundError($restResponse);
         }
 
-        if (!$this->restApiValidator->isBrandAssignedToRestUser($brandResponseTransfer->getBrand(), $restRequest->getRestUser())) {
-            return $this->restApiError->addBrandNoPermissionError($restResponse);
-        }
-
-        $restBrandsResponseAttributesTransfer = $this->brandMapper
-            ->mapRestBrandsResponseAttributesTransfer(
-                $brandResponseTransfer->getBrand()
-            );
+        $restBrandsResponseAttributesTransfer = $this->brandMapper->mapRestBrandsResponseAttributesTransfer(
+            $brandTransfers->offsetGet(0)
+        );
 
         $restResource = $this->restResourceBuilder->createRestResource(
             BrandsRestApiConfig::RESOURCE_BRANDS,
-            $brandResponseTransfer->getBrand()->getUuid(),
+            $brandTransfers->offsetGet(0)->getUuid(),
             $restBrandsResponseAttributesTransfer
         );
 
@@ -114,19 +108,25 @@ class BrandReader implements BrandReaderInterface
      *
      * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface
      */
-    public function getActiveBrands(RestRequestInterface $restRequest): RestResponseInterface
+    public function findBrands(RestRequestInterface $restRequest): RestResponseInterface
     {
+        $filterFieldTransfers = new ArrayObject();
+
+        foreach ($this->filterFieldsExpanderPlugins as $filterFieldsExpanderPlugin) {
+            $filterFieldTransfers = $filterFieldsExpanderPlugin->expand($restRequest, $filterFieldTransfers);
+        }
+
+        $brandListTransfer = (new BrandListTransfer())
+            ->setFilterFields($filterFieldTransfers);
+
+        $brandListTransfer = $this->brandClient->findBrands($brandListTransfer);
+
         $restResponse = $this->restResourceBuilder->createRestResponse();
 
-        $brandCollectionTransfer = $this->brandClient->getActiveBrands();
-
-        foreach ($brandCollectionTransfer->getBrands() as $brandTransfer) {
-            if (!$this->restApiValidator->isBrandAssignedToRestUser($brandTransfer, $restRequest->getRestUser())) {
-                continue;
-            }
-
-            $restBrandsResponseAttributesTransfer = $this->brandMapper
-                ->mapRestBrandsResponseAttributesTransfer($brandTransfer);
+        foreach ($brandListTransfer->getBrands() as $brandTransfer) {
+            $restBrandsResponseAttributesTransfer = $this->brandMapper->mapRestBrandsResponseAttributesTransfer(
+                $brandTransfer
+            );
 
             $restResource = $this->restResourceBuilder->createRestResource(
                 BrandsRestApiConfig::RESOURCE_BRANDS,

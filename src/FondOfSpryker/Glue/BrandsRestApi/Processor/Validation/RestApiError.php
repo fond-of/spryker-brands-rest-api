@@ -17,9 +17,9 @@ class RestApiError implements RestApiErrorInterface
     public function addBrandUuidMissingError(RestResponseInterface $restResponse): RestResponseInterface
     {
         $restErrorMessageTransfer = (new RestErrorMessageTransfer())
-            ->setCode(BrandsRestApiConfig::RESPONSE_CODE_EXTERNAL_REFERENCE_MISSING)
+            ->setCode(BrandsRestApiConfig::RESPONSE_CODE_UUID_MISSING)
             ->setStatus(Response::HTTP_BAD_REQUEST)
-            ->setDetail(BrandsRestApiConfig::RESPONSE_DETAILS_EXTERNAL_REFERENCE_MISSING);
+            ->setDetail(BrandsRestApiConfig::RESPONSE_DETAILS_UUID_MISSING);
 
         return $restResponse->addError($restErrorMessageTransfer);
     }
@@ -33,23 +33,8 @@ class RestApiError implements RestApiErrorInterface
     {
         $restErrorMessageTransfer = (new RestErrorMessageTransfer())
             ->setCode(BrandsRestApiConfig::RESPONSE_CODE_BRAND_NOT_FOUND)
-            ->setStatus(Response::HTTP_BAD_REQUEST)
+            ->setStatus(Response::HTTP_NOT_FOUND)
             ->setDetail(BrandsRestApiConfig::RESPONSE_DETAILS_BRAND_NOT_FOUND);
-
-        return $restResponse->addError($restErrorMessageTransfer);
-    }
-
-    /**
-     * @param \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface $restResponse
-     *
-     * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface
-     */
-    public function addBrandNoPermissionError(RestResponseInterface $restResponse): RestResponseInterface
-    {
-        $restErrorMessageTransfer = (new RestErrorMessageTransfer())
-            ->setCode(BrandsRestApiConfig::RESPONSE_CODE_NO_PERMISSION)
-            ->setStatus(Response::HTTP_BAD_REQUEST)
-            ->setDetail(BrandsRestApiConfig::RESPONSE_DETAILS_NO_PERMISSION);
 
         return $restResponse->addError($restErrorMessageTransfer);
     }

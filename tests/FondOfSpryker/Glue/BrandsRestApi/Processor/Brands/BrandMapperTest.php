@@ -37,11 +37,11 @@ class BrandMapperTest extends Unit
      */
     public function testMapRestBrandsResponseAttributesTransfer(): void
     {
-        $this->brandTransferMock->expects($this->atLeastOnce())
+        $this->brandTransferMock->expects(static::atLeastOnce())
             ->method('toArray')
             ->willReturn([]);
 
-        $this->assertInstanceOf(
+        static::assertInstanceOf(
             RestBrandsResponseAttributesTransfer::class,
             $this->brandMapper->mapRestBrandsResponseAttributesTransfer($this->brandTransferMock)
         );
